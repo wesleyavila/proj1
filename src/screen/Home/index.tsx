@@ -1,15 +1,37 @@
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, FlatList } from "react-native";
+import { useState }  from 'react';
+
+import { View, Text, TextInput, TouchableOpacity, Alert, FlatList } from "react-native";
 import { styles } from "./styles";
 
 import { Participante } from "components/Participante";
 
 export function Home() {
-    const participantes = [
-        "Teste","Teste 1","Teste 2","Teste 3",
-        "Teste 4","Teste 5","Teste 6","Teste 7",
-        "Teste 8","Teste 9"]
+    const [participantes, setParticipantes] = useState([])
+    const [participante, setParticipante] = useState('')
+
     function removerParticipante(nome: String){
-        Alert.alert("Aviso",`Participante ${nome} removido`)
+        Alert.alert("Aviso",`Remover participante ${nome}?`,[
+            {
+                text: 'Sim',
+                onPress: () => Alert.alert('Aviso!', 'Deletado' )
+
+            },
+            {
+                text: 'Não',
+                style: 'cancel'
+            }            
+        ])
+    }
+
+    function adicionarParticipante(){
+        if (participantes.includes(participante)){
+            return Alert.alert('Aviso!',`Já existe o participante ${participante} na lista`)
+        }
+        if (participante == ''){
+            return Alert.alert('Aviso!',`Campo não pode ser em branco!`)
+        }        
+        setParticipantes(prevState => [...prevState, participante])
+        setParticipante('')
     }
 
     return (
@@ -22,10 +44,15 @@ export function Home() {
                     style={styles.input}
                     placeholder="Nome do participante"
                     placeholderTextColor={'#6b6b6b'}
+                    onChangeText={setParticipante}
+                    value={participante}
                     //keyboardType="email-address"
                 />
                 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                    style={styles.button}
+                    onPress={adicionarParticipante}
+                >
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
             </View>
